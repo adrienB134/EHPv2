@@ -6,7 +6,7 @@ import pandas as pd
 import gc
 import streamlit as st
 import plotly.express as px
-import time
+
 
 
 
@@ -69,14 +69,30 @@ def RCP(ehp_data,app_mode):
     else:
         st.write("Erreur")
 
+def about():
+    st.write("Réalisé par Adrien Berthélémé")
+    st.write("adrien.bertheleme@gmail.com")
+    st.write("06.72.65.24.97")
+    st.write("Code source dispo ici: https://github.com/adrienB134/EHPv2")
+    st.button("Retour",on_click = st.empty)
+
 def main():
     UploadedFile=st.sidebar.file_uploader(label="Charger le fichier de dépouillement")
-    if UploadedFile != None:
-        app_mode = st.sidebar.selectbox(
+    container_sidebar=st.sidebar.container()
+
+    if st.sidebar.button("A propos"):
+        about()
+        st.stop()
+
+    if UploadedFile == None:
+        st.warning('Charger le fichier de dépouillement')
+        st.stop()
+    elif UploadedFile != None:
+        app_mode = container_sidebar.selectbox(
             'Palier',
             ['900','1300']
         )
-        courbe = st.sidebar.selectbox(
+        courbe = container_sidebar.selectbox(
             'courbe',
             [
                 "Evolution de la pression RCP pendant l'épreuve",
@@ -97,6 +113,7 @@ def main():
                 "Evolution de la pression pendant le palier d'épreuve"
             ]
         )
+
         chart_data=load_data(UploadedFile)
         st.info(
             "Mettre la courbe en plein écran avant d'enregistrer en utilisant le bouton appareil photo",
